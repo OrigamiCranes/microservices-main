@@ -1,7 +1,6 @@
 - name: Initialise the swarm
   docker_swarm:
     state: present
-    name: 'microservices'
 
 - name: Get info on Docker Swarm
   docker_swarm_info:
