@@ -16,7 +16,7 @@
     update_cache: yes
 
 - name: Get docker gpg key
-  ansible.builtin.apt-key:
+  ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
