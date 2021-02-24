@@ -1,0 +1,39 @@
+version: '3.7'
+services:
+
+  front:
+    container_name: "front"
+    image: ${AUTHOR}/front:${app_version}
+      ports:
+      - target: 5000
+        published: 80
+        protocol: tcp
+    environment:
+      DATABASE_URI: ${DATABASE_URI}
+    deploy:
+      replicas: 2
+
+  back:
+    container_name: "back"
+    image: ${AUTHOR}/back:${app_version}
+    deploy:
+      replicas: 2
+
+  stream:
+    container_name: "stream"
+    image: ${AUTHOR}/stream:${app_version}
+    deploy:
+      replicas: 2
+
+  math:
+    container_name: "math"
+    image: ${AUTHOR}/math:${app_version}
+    deploy:
+      replicas: 2
+
+  webserver:
+    container_name: "nginx"
+    image: nginx:alpine
+      ports:
+      - target: 80
+        protocol: tcp

@@ -1,0 +1,29 @@
+- name: Install aptitude
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+- name: Intall required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+    loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools', 'gnupg-agent']
+
+- name: Get docker gpg key
+  apt-key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Get docker repo
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+
+- name: Update apt and Install docker-ce
+  apt: update_cache=yes name=docker-ce state=latest
+
+- name: Run docker service
+  service:
+    name: docker
+    state: started
+
+- name: Install pip docker package
+  pip:
+    name: docker
+    executable: pip3

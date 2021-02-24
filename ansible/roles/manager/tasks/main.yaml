@@ -1,0 +1,9 @@
+- name: Initialise the swarm
+    community.general.docker_swarm:
+      name: 'microservices'
+      state: present
+
+- name: Get info on Docker Swarm
+  community.docker.docker_swarm_info:
+  ignore_errors: yes
+  register: result
