@@ -6,12 +6,12 @@ pipeline{
     }
 
     parameters{
-        string('REPO_URL','')
-        string('REPO_NAME','')
+        string('REPO_URL',defaultValue:'')
+        string('REPO_NAME',defaultValue:'')
     }
 
     triggers{
-        GenericTrigger {
+        GenericTrigger (
                 genericVariables {
                     genericVariable {
                      key("REPO_URL")
@@ -26,7 +26,7 @@ pipeline{
                      regexpFilter("")
                     }
             }
-        }
+        )
     }
     stages{
         stage("Git Checkout"){
