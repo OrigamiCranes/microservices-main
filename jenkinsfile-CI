@@ -1,7 +1,6 @@
 pipeline{
     agent any
     environment{
-        DATABASE_URI = credentials("DATABASE_URI")
         app_version=3
         rollback='true'
     }
@@ -9,7 +8,6 @@ pipeline{
     parameters{
         stringParam('REPO_URL','')
         stringParam('REPO_NAME','')
-        booleanParam('FORCE_BUILD', defaultValue:false, '')
     }
 
     triggers{
@@ -33,7 +31,7 @@ pipeline{
     stages{
         stage("Git Checkout"){
             steps{
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/OrigamiCranes/microservices-math.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: ${REPO_URL}]]])
             }
         }
 
@@ -41,26 +39,14 @@ pipeline{
 
         }
 
-        stage("Build Image"){
+        stage("Build Image and Push"){
             steps{
-                script{
-                    if (env.rollback == 'false') {
-                        sh "docker rmi -f \$(docker images -qa) || true"
-                        sh "docker-compose build --parallel --build-arg APP_VERSION=${app_version} && docker-compose push"
-                    }
-                }
+                 docker.withRegistry('https://registry.example.com', 'credentials-id') {
+
+                def customImage = docker.build("my-image:${env.BUILD_ID}")
+
+                /* Push the container to the custom Registry */
+                customImage.push()
             }
         }
 
-        stage("Configure Swarm"){
-            steps{
-                sh "cd ansible && /home/jenkins/.local/bin/ansible-playbook -i inventory playbook.yaml"
-            }
-        }
-
-        stage("Deploy application"){
-            steps{
-                sh "bash jenkinsbash/stack.sh"
-            }
-        }
-    }

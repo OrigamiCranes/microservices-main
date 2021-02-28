@@ -1,10 +1,10 @@
-[manager]
+[managers]
 manager
 
 [workers]
 worker
 
-[nginx]
+[nginxs]
 nginx
 
 [manager:vars]

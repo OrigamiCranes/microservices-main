@@ -1,0 +1,25 @@
+pipeline{
+    stages{
+        stage("Get Config from Git"){
+            steps{
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/OrigamiCranes/microservices-main.git']]])
+            }
+        }
+        stage("Configure Swarm"){
+            steps{
+                sh "cd ansible && /home/jenkins/.local/bin/ansible-playbook -i inventory playbook.yaml"
+            }
+        }
+
+        stage("Deploy Application"){
+            steps{
+                scp -i ~/.ssh/ansible_id_rsa docker-compose.yaml jack_e_mckeon@swarm-manager:/home/jenkins/docker-compose.yaml
+                ssh -i ~/.ssh/ansible_id_rsa jenkins@swarm-manager << EOF
+                    export DATABASE_URI=${DATABASE_URI}
+                    export AUTHOR=${AUTHOR}
+                    docker stack deploy --compose-file /home/jenkins/docker-compose.yaml microservices-stack
+                EOF
+            }
+        }
+    }
+    }

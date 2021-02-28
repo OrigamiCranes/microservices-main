@@ -1,16 +1,10 @@
-- hosts: localhost
-  connection: local
-  become: true
-  roles:
-  - docker
-
 - hosts: manager
   become: true
   roles:
   - docker
   - manager
 
-- hosts: worker
+- hosts: workers
   become: true
   roles:
   - docker

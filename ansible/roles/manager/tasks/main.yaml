@@ -5,4 +5,4 @@
 - name: Get info on Docker Swarm
   docker_swarm_info:
   ignore_errors: yes
-  register: result
+  register: swarm_info
