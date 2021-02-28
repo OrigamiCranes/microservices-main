@@ -6,8 +6,8 @@ pipeline{
     }
 
     parameters{
-        stringParam('REPO_URL','')
-        stringParam('REPO_NAME','')
+        string('REPO_URL','')
+        string('REPO_NAME','')
     }
 
     triggers{
@@ -36,7 +36,9 @@ pipeline{
         }
 
         stage("Testing"){
-
+            steps{
+                sh 'echo test'
+            }
         }
 
         stage("Build Image and Push"){
